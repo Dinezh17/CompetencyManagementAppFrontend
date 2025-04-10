@@ -1,0 +1,326 @@
+import React, { useState, useEffect } from 'react';
+import { Bar } from 'react-chartjs-2';
+import api from '../interceptor/api';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { useNavigate } from 'react-router-dom';
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+// Data structures
+interface Competency {
+  competency_code: string;
+  competency_name: string;
+  description: string;
+  required_score: number;
+  average_score: number;
+  fulfillment_rate: number;
+  employees_evaluated: number;
+  employees_meeting_required: number;
+  rank: number;
+}
+
+interface DepartmentData {
+  department_name: string;
+  overall_average_score: number;
+  overall_fulfillment_rate: number;
+  competencies: Competency[];
+}
+
+interface Department {
+  id: number;
+  department_code: string;
+  name: string;
+}
+
+const DepartmentPerformanceDashboard: React.FC = () => {
+  // State for departments list and selected department
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('');
+  const [departmentData, setDepartmentData] = useState<DepartmentData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate()
+  // Fetch departments list on component mount
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await api.get('/departments/');
+        setDepartments(response.data);
+        
+        // Set first department as default selection if available
+        if (response.data.length > 0) {
+          setSelectedDepartment(response.data[0].department_code);
+        }
+      } catch (err) {
+        setError('Failed to fetch departments');
+        console.error('Error fetching departments:', err);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
+  // Fetch department performance data when selected department changes
+  useEffect(() => {
+    if (!selectedDepartment) return;
+
+    const fetchDepartmentData = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get(`/stats/department-performance/${selectedDepartment}`);
+        // API returns data in format { department_code: { data } }
+        const data = response.data[selectedDepartment];
+        setDepartmentData(data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch department performance data');
+        console.error('Error fetching department data:', err);
+        setDepartmentData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDepartmentData();
+  }, [selectedDepartment]);
+
+  // Handle department selection change
+  const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDepartment(e.target.value);
+  };
+
+  // Prepare chart data
+  const chartData = departmentData ? {
+    labels: departmentData.competencies.map(comp => comp.competency_name),
+    datasets: [
+      {
+        label: 'Average Score',
+        data: departmentData.competencies.map(comp => comp.average_score),
+        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Required Score',
+        data: departmentData.competencies.map(comp => comp.required_score),
+        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+      }
+    ],
+  } : null;
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: departmentData ? `${departmentData.department_name} Department Competency Scores` : 'Department Competency Scores',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Score',
+        },
+      },
+      x: {
+        ticks: {
+          autoSkip: false,
+          maxRotation: 45,
+          minRotation: 45,
+        },
+      },
+    },
+  };
+
+  return (
+    <div style={{
+      marginTop:"90px",
+      fontFamily: 'Arial, sans-serif',
+      maxWidth: '1600px',
+      margin: '0 auto',
+      padding: '20px'
+    }}>
+      <h1 style={{ textAlign: 'center', marginTop:"70px",marginBottom: '20px' }}>Department Performance Dashboard</h1>
+      <button onClick={()=>{navigate("/employee-stats-overall")}}>Overall</button>
+      
+      <div style={{ marginBottom: '30px' }}>
+        <label htmlFor="department-select" style={{ marginRight: '10px', fontWeight: 'bold' }}>
+          Select Department:
+        </label>
+        <select 
+          id="department-select" 
+          value={selectedDepartment} 
+          onChange={handleDepartmentChange}
+          style={{
+            padding: '8px 12px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            fontSize: '16px',
+            minWidth: '200px'
+          }}
+        >
+          {departments.map(dept => (
+            <option key={dept.id} value={dept.department_code}>
+              {dept.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {error && (
+        <div style={{ 
+          backgroundColor: '#ffebee', 
+          color: '#c62828', 
+          padding: '10px', 
+          borderRadius: '5px',
+          marginBottom: '20px' 
+        }}>
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+          <p>Loading department data...</p>
+        </div>
+      ) : departmentData ? (
+        <>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '20px',
+            marginBottom: '30px'
+          }}>
+            <div style={{
+              backgroundColor: '#f5f5f5',
+              padding: '15px',
+              borderRadius: '5px'
+            }}>
+              <h3>Overall Average Score</h3>
+              <p style={{ fontSize: '24px', fontWeight: 'bold' }}>{departmentData.overall_average_score.toFixed(2)}</p>
+            </div>
+            <div style={{
+              backgroundColor: '#f5f5f5',
+              padding: '15px',
+              borderRadius: '5px'
+            }}>
+              <h3>Overall Fulfillment Rate</h3>
+              <p style={{ fontSize: '24px', fontWeight: 'bold' }}>{departmentData.overall_fulfillment_rate.toFixed(2)}%</p>
+            </div>
+          </div>
+          
+          {chartData && (
+            <div style={{
+              height: '500px',
+              marginBottom: '30px'
+            }}>
+              <Bar data={chartData} options={chartOptions} />
+            </div>
+          )}
+          
+          <div style={{ marginBottom: '30px' }}>
+            <h2>Top Performing Competencies</h2>
+            {departmentData.competencies.length > 0 ? (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                gap: '15px'
+              }}>
+                {departmentData.competencies.slice(0, 3).map(comp => (
+                  <div key={comp.competency_code} style={{
+                    backgroundColor: '#e6f7ff',
+                    padding: '15px',
+                    borderRadius: '5px',
+                    borderLeft: '4px solid #1890ff'
+                  }}>
+                    <h3 style={{ marginTop: 0 }}>{comp.competency_name}</h3>
+                    <p><strong>Rank:</strong> {comp.rank}</p>
+                    <p><strong>Score:</strong> {comp.average_score.toFixed(2)}/{comp.required_score}</p>
+                    <p><strong>Fulfillment:</strong> {comp.fulfillment_rate}%</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No competency data available for this department.</p>
+            )}
+          </div>
+          
+          <div>
+            <h2>All Competencies</h2>
+            {departmentData.competencies.length > 0 ? (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{
+                  width: '100%',
+                  borderCollapse: 'collapse'
+                }}>
+                  <thead>
+                    <tr style={{
+                      backgroundColor: '#f0f0f0',
+                      textAlign: 'left'
+                    }}>
+                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Rank</th>
+                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Code</th>
+                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Competency</th>
+                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Score</th>
+                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Fulfillment</th>
+                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Employees</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {departmentData.competencies.map(comp => (
+                      <tr key={comp.competency_code} style={{
+                        borderBottom: '1px solid #ddd' 
+                      }}>
+                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>{comp.rank}</td>
+                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>{comp.competency_code}</td>
+                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>{comp.competency_name}</td>
+                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>
+                          {comp.average_score.toFixed(2)}/{comp.required_score}
+                        </td>
+                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>{comp.fulfillment_rate}%</td>
+                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>
+                          {comp.employees_meeting_required}/{comp.employees_evaluated}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p>No competency data available for this department.</p>
+            )}
+          </div>
+        </>
+      ) : (
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+          <p>Please select a department to view performance data.</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default DepartmentPerformanceDashboard;
