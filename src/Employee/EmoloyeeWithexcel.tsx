@@ -143,7 +143,7 @@ const ExcelEmployeeUpload: React.FC = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    maxWidth: "1900px",
+    maxWidth: "1700px",
     margin: "80px auto",
     padding: "20px",
     fontFamily: "Arial, sans-serif",

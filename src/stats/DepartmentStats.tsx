@@ -157,14 +157,18 @@ const DepartmentPerformanceDashboard: React.FC = () => {
 
   return (
     <div style={{
-      marginTop:"90px",
       fontFamily: 'Arial, sans-serif',
-      maxWidth: '1600px',
+      maxWidth: '1700px',
       margin: '0 auto',
       padding: '20px'
     }}>
-      <h1 style={{ textAlign: 'center', marginTop:"70px",marginBottom: '20px' }}>Department Performance Dashboard</h1>
-      <button onClick={()=>{navigate("/employee-stats-overall")}}>Overall</button>
+      <div style={{padding:"10px", marginTop:"70px", display: 'flex',justifyContent: 'center',gap: '16px',}}>
+    <button style={buttonStyle} onClick={()=>{navigate("/employee-stats-overall")}}>Overall</button>
+    <button style={buttonStyle} onClick={()=>{navigate("/employee-stats-departmentwise")}}>DepartMent</button>
+    
+    </div>
+      <h1 style={{ textAlign: 'center',marginBottom: '20px' }}>Department Performance Dashboard</h1>
+     
       
       <div style={{ marginBottom: '30px' }}>
         <label htmlFor="department-select" style={{ marginRight: '10px', fontWeight: 'bold' }}>
@@ -234,7 +238,8 @@ const DepartmentPerformanceDashboard: React.FC = () => {
           
           {chartData && (
             <div style={{
-              height: '500px',
+             
+              width:"1600px",
               marginBottom: '30px'
             }}>
               <Bar data={chartData} options={chartOptions} />
@@ -246,7 +251,7 @@ const DepartmentPerformanceDashboard: React.FC = () => {
             {departmentData.competencies.length > 0 ? (
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(500px, 1fr))',
                 gap: '15px'
               }}>
                 {departmentData.competencies.slice(0, 3).map(comp => (
@@ -281,12 +286,12 @@ const DepartmentPerformanceDashboard: React.FC = () => {
                       backgroundColor: '#f0f0f0',
                       textAlign: 'left'
                     }}>
-                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Rank</th>
-                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Code</th>
-                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Competency</th>
-                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Score</th>
-                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Fulfillment</th>
-                      <th style={{ padding: '12px', border: '1px solid #ddd' }}>Employees</th>
+                      <th style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>Rank</th>
+                      <th style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>Code</th>
+                      <th style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>Competency</th>
+                      <th style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>Score</th>
+                      <th style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>Fulfillment</th>
+                      <th style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>Employees</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -294,14 +299,14 @@ const DepartmentPerformanceDashboard: React.FC = () => {
                       <tr key={comp.competency_code} style={{
                         borderBottom: '1px solid #ddd' 
                       }}>
-                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>{comp.rank}</td>
-                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>{comp.competency_code}</td>
-                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>{comp.competency_name}</td>
-                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>
+                        <td style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>{comp.rank}</td>
+                        <td style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>{comp.competency_code}</td>
+                        <td style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>{comp.competency_name}</td>
+                        <td style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>
                           {comp.average_score.toFixed(2)}/{comp.required_score}
                         </td>
-                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>{comp.fulfillment_rate}%</td>
-                        <td style={{ padding: '12px', border: '1px solid #ddd' }}>
+                        <td style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>{comp.fulfillment_rate}%</td>
+                        <td style={{ padding: '20px', border: '1px solid #ddd',fontSize:"20px" }}>
                           {comp.employees_meeting_required}/{comp.employees_evaluated}
                         </td>
                       </tr>
@@ -322,5 +327,21 @@ const DepartmentPerformanceDashboard: React.FC = () => {
     </div>
   );
 };
+
+const buttonStyle = {
+  padding: '12px 24px',
+  backgroundColor: '#4f46e5', // Indigo
+  color: '#ffffff',
+  border: 'none',
+  width: '200px',
+  height: '50px',
+  borderRadius: '8px',
+  fontSize: '16px',
+  fontWeight: '600',
+  cursor: 'pointer',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  transition: 'background-color 0.3s ease, transform 0.2s ease',
+};
+
 
 export default DepartmentPerformanceDashboard;

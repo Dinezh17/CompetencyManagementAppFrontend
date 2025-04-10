@@ -1,45 +1,69 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./auth/AuthContext";
+import api from "./interceptor/api";
 
+interface dpt{
+  id: number;
+  department_code:string;
+  name: string;
+
+}
 const Navbar: React.FC = () => {
   const { user, logout } = useContext(AuthContext)!;
   const navigate = useNavigate();
+  const[dptname,setdpt] = useState<dpt>();
   const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(()=>{
+   
+    const req = async()=>{
+      if(user){
+      const response = await api.get(`/department/${user.departmentCode}`);
 
-  // Color theme from the provided palette
+      setdpt(response.data)
+    }}
+    req()
+
+
+  },[user])
+  // White theme palette
   const theme = {
-    primary: "#5D001E",    // Dark red
-    secondary: "#9A1750",  // Medium purple-red
-    accent: "#EE4C7C",     // Pink
-    light: "#E3E2DF",      // Light gray (from #ESE2DF - assuming this was meant to be #E3E2DF)
-    lighter: "#EAFBC",     // Very light gray (from #ESAFBC - assuming this was meant to be #EAFAFC or similar)
+    primary: "#FFFFFF",    // White
+    secondary: "#F8F9FA",  // Light gray
+    accent: "#3F51B5",     // Indigo blue
+    text: "#212529",       // Dark gray for text
+    lightText: "#6C757D",  // Gray for secondary text
+    border: "#E0E0E0",     // Light border color
   };
 
   // Inline Styles
   const navbarStyle: React.CSSProperties = {
     backgroundColor: theme.primary,
-    color: theme.light,
+    color: theme.text,
     padding: "12px 20px",
     position: "fixed",
     width: "100%",
     top: 0,
     left: 0,
-    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
     zIndex: 1000,
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    boxSizing: "border-box", // Ensure padding is included in width
+    boxSizing: "border-box",
+    borderBottom: `1px solid ${theme.border}`,
   };
 
   const menuButtonStyle: React.CSSProperties = {
     background: "none",
     border: "none",
-    color: theme.light,
+    color: theme.text,
     fontSize: "24px",
     cursor: "pointer",
     marginRight: "10px",
+    padding: "8px",
+    borderRadius: "4px",
+    transition: "background-color 0.2s",
   };
 
   const sidebarStyle: React.CSSProperties = {
@@ -48,21 +72,22 @@ const Navbar: React.FC = () => {
     left: menuOpen ? "0" : "-250px",
     width: "250px",
     height: "100vh",
-    backgroundColor: theme.secondary,
+    backgroundColor: theme.primary,
     paddingTop: "60px",
     transition: "left 0.3s ease-in-out",
-    boxShadow: menuOpen ? "2px 0 5px rgba(0, 0, 0, 0.3)" : "none",
+    boxShadow: menuOpen ? "2px 0 5px rgba(0, 0, 0, 0.1)" : "none",
     zIndex: 1100,
+    borderRight: `1px solid ${theme.border}`,
   };
 
   const sidebarLinkStyle: React.CSSProperties = {
     display: "block",
     padding: "12px 20px",
-    color: theme.light,
+    color: theme.text,
     textDecoration: "none",
-    fontSize: "18px",
+    fontSize: "16px",
     transition: "background-color 0.2s",
-    
+    borderBottom: `1px solid ${theme.border}`,
   };
 
   const overlayStyle: React.CSSProperties = {
@@ -71,7 +96,7 @@ const Navbar: React.FC = () => {
     left: 0,
     width: "100vw",
     height: "100vh",
-    background: "rgba(0, 0, 0, 0.5)",
+    background: "rgba(0, 0, 0, 0.3)",
     display: menuOpen ? "block" : "none",
     zIndex: 1099,
   };
@@ -80,32 +105,34 @@ const Navbar: React.FC = () => {
     display: "flex",
     gap: "15px",
     alignItems: "center",
-    flexShrink: 0, // Prevent shrinking on small screens
-    marginLeft: "15px", // Add some spacing from the center content
+    flexShrink: 0,
+    marginLeft: "15px",
   };
 
-  const logoutButtonStyle: React.CSSProperties = {
+  const authButtonStyle: React.CSSProperties = {
     backgroundColor: theme.accent,
-    color: theme.light,
+    color: "#FFFFFF",
     border: "none",
-    padding: "8px 14px",
+    padding: "8px 16px",
     cursor: "pointer",
-    borderRadius: "5px",
+    borderRadius: "4px",
     fontSize: "14px",
-    fontWeight: "bold",
-    whiteSpace: "nowrap", // Prevent text wrapping
+    fontWeight: "500",
+    whiteSpace: "nowrap",
+    transition: "background-color 0.2s",
+    textDecoration: "none",
   };
 
   const userInfoStyle: React.CSSProperties = {
     flex: 1,
     textAlign: "center",
-    fontSize: "16px",
-    fontWeight: 500,
-    color: theme.light,
+    fontSize: "24px",
+    fontWeight: 400,
+    color: theme.lightText,
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
-    padding: "0 15px", // Add padding to prevent text touching edges
+    padding: "0 15px",
   };
 
   return (
@@ -115,17 +142,22 @@ const Navbar: React.FC = () => {
         <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
           {/* Sidebar Toggle Button */}
           {user && (
-            <button style={menuButtonStyle} onClick={() => setMenuOpen(!menuOpen)}>
+            <button 
+              style={menuButtonStyle} 
+              onClick={() => setMenuOpen(!menuOpen)}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+            >
               ☰
             </button>
           )}
           <Link 
             to="/" 
             style={{ 
-              color: theme.light, 
+              color: theme.accent, 
               textDecoration: "none", 
               fontSize: "18px", 
-              fontWeight: "bold",
+              fontWeight: "600",
               whiteSpace: "nowrap",
             }}
           >
@@ -137,7 +169,7 @@ const Navbar: React.FC = () => {
         {user && (
           <div style={userInfoStyle}>
             <span>
-              {user.username} | {user.role} | Dept: {user.departmentCode}
+              {user.username} | {user.role} | Dept: {dptname?.name}
             </span>
           </div>
         )}
@@ -146,15 +178,53 @@ const Navbar: React.FC = () => {
         <div style={rightSideContainerStyle}>
           {!user ? (
             <>
-              <Link to="/login" style={{ color: theme.light, textDecoration: "none" }}>Login</Link>
-              <Link to="/register" style={{ color: theme.light, textDecoration: "none" }}>Register</Link>
+              <Link
+                to="/login"
+                style={authButtonStyle}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#303F9F"}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = theme.accent}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                style={{
+                  ...authButtonStyle,
+                  backgroundColor: "transparent",
+                  color: theme.accent,
+                  border: `1px solid ${theme.accent}`,
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = theme.secondary;
+                  e.currentTarget.style.color = theme.accent;
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = theme.accent;
+                }}
+              >
+                Register
+              </Link>
             </>
           ) : (
             <button
-              style={logoutButtonStyle}
+              style={{
+                ...authButtonStyle,
+                backgroundColor: "transparent",
+                color: theme.accent,
+                border: `1px solid ${theme.accent}`,
+              }}
               onClick={() => {
                 logout();
                 navigate("/");
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = theme.secondary;
+                e.currentTarget.style.color = theme.accent;
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = theme.accent;
               }}
             >
               Logout
@@ -166,35 +236,138 @@ const Navbar: React.FC = () => {
       {/* Sidebar */}
       {user && (
         <div style={sidebarStyle}>
-          <Link to="/" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Home</Link>
+          <Link 
+            to="/" 
+            style={sidebarLinkStyle} 
+            onClick={() => setMenuOpen(false)}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+          >
+            Home
+          </Link>
 
           {/* HR MENU */}
           {user.role === "HR" && (
             <>
-              <Link to="/department-crud" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Department</Link>
-              <Link to="/role-crud" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Role</Link>
-              <Link to="/competency-crud" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Competency</Link>
-              <Link to="/role-competencies" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Role Assign</Link>
-              <Link to="/employee-crud" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Employee</Link>
-              <Link to="/employee-excel" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Employee Excel Upload</Link>
-              <Link to="/employee-eval" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>List Employee</Link>
-              <Link to="/employee-stats-overall" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Employee Stats</Link>
-              <Link to="/competency-gap-table" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Competency Gap Analysis</Link>
-              <Link to="/employee-competencies-table" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Employee Competencies report</Link>
-
+              <Link 
+                to="/department-crud" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Department
+              </Link>
+              <Link 
+                to="/role-crud" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Role
+              </Link>
+              <Link 
+                to="/competency-crud" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Competency
+              </Link>
+              <Link 
+                to="/role-competencies" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Role Assign
+              </Link>
+              <Link 
+                to="/employee-crud" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Employee
+              </Link>
+              <Link 
+                to="/employee-excel" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Employee Excel Upload
+              </Link>
+              <Link 
+                to="/employee-eval" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                List Employee
+              </Link>
+              <Link 
+                to="/employee-stats-overall" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Employee Stats
+              </Link>
+              <Link 
+                to="/competency-gap-table" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Competency Gap Analysis
+              </Link>
+              <Link 
+                to="/employee-competencies-table" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Employee Competencies report
+              </Link>
             </>
           )}
           
-
           {/* HOD MENU */}
           {user.role === "HOD" && (
             <>
-              <Link to="/employee-eval-hod" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>Evaluate Employees</Link>
+              <Link 
+                to="/employee-eval-hod" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Evaluate Employees
+              </Link>
             </>
           )}
+          
           {user.role === "Employee" && (
             <>
-              <Link to="/my-competency-stats" style={sidebarLinkStyle} onClick={() => setMenuOpen(false)}>My scores</Link>
+              <Link 
+                to="/my-competency-stats" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                My scores
+              </Link>
             </>
           )}
 
@@ -207,19 +380,27 @@ const Navbar: React.FC = () => {
               textAlign: "left",
               width: "100%",
               cursor: "pointer",
-             
+              color: theme.text,
             }}
             onClick={() => {
               logout();
               navigate("/");
               setMenuOpen(false);
             }}
-          >Logout
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = theme.secondary;
+              e.currentTarget.style.color = theme.accent;
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = theme.text;
+            }}
+          >
+            Logout
           </button>
         </div>
       )}
       
-
       {/* Overlay (Closes Sidebar when clicking outside) */}
       <div style={overlayStyle} onClick={() => setMenuOpen(false)}></div>
     </>

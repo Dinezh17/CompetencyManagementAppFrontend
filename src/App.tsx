@@ -116,8 +116,10 @@ const App: React.FC = () => {
           <Route path="/employee-excel" element={<ExcelEmployeeUpload/>} />
           <Route path="/employee-eval" element={<EmployeeEvaluation/>} />
           <Route path="/employee-details/:employeeNumber" element={<EmployeeDetails />} />
-          <Route path="/employee-stats-departmentwise" element={<DepartmentPerformanceDashboard/>} />
-          <Route path="/employee-stats-overall" element={<OverallCompetencyDashboard/>} />
+
+          {/* <Route path="/employee-stats-departmentwise" element={<DepartmentPerformanceDashboard/>} /> */}
+
+          {/* <Route path="/employee-stats-overall" element={<OverallCompetencyDashboard/>} /> */}
 
 
           <Route path="/employee-assign-comp/:employeeNumber" element={<EmployeeCompetencyAssignment />} />
