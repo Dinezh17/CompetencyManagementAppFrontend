@@ -245,6 +245,110 @@ const Navbar: React.FC = () => {
           >
             Home
           </Link>
+            {/* ADMIN MENU
+            {user.role === "ADMIN" && (
+            <>
+              <Link 
+                to="/department-crud" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Department
+              </Link>
+              <Link 
+                to="/role-crud" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Role
+              </Link>
+              <Link 
+                to="/competency-crud" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Competency
+              </Link>
+              <Link 
+                to="/role-competencies" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Role Assign
+              </Link>
+              <Link 
+                to="/employee-crud" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Employee
+              </Link>
+              <Link 
+                to="/employee-excel" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Employee Excel Upload
+              </Link>
+              <Link 
+                to="/employee-eval" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                List Employee
+              </Link>
+              <Link 
+                to="/employee-stats-overall" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Competency DashBoard
+              </Link>
+              <Link 
+                to="/competency-gap-table" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Competency Gap Analysis
+              </Link>
+              <Link 
+                to="/employee-competencies-table" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Employee Competencies report
+              </Link>
+              <Link 
+                to="/employee-eval-hod" 
+                style={sidebarLinkStyle} 
+                onClick={() => setMenuOpen(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                Evaluate Employees
+              </Link>
+            </>
+          )} */}
 
           {/* HR MENU */}
           {user.role === "HR" && (
@@ -319,7 +423,7 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Employee Stats
+                Competency DashBoard
               </Link>
               <Link 
                 to="/competency-gap-table" 

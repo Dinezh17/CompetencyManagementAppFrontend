@@ -52,6 +52,8 @@ const DepartmentPerformanceDashboard: React.FC = () => {
   // State for departments list and selected department
   const [departments, setDepartments] = useState<Department[]>([]);
   const [selectedDepartment, setSelectedDepartment] = useState<string>('');
+  const [competencies, setcompetencies] = useState<Competency[]>([]);
+  
   const [departmentData, setDepartmentData] = useState<DepartmentData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,6 +89,7 @@ const DepartmentPerformanceDashboard: React.FC = () => {
         // API returns data in format { department_code: { data } }
         const data = response.data[selectedDepartment];
         setDepartmentData(data);
+        setcompetencies(data.competencies)
         setError(null);
       } catch (err) {
         setError('Failed to fetch department performance data');
@@ -107,7 +110,7 @@ const DepartmentPerformanceDashboard: React.FC = () => {
 
   // Prepare chart data
   const chartData = departmentData ? {
-    labels: departmentData.competencies.map(comp => comp.competency_name),
+    labels: departmentData.competencies.map(comp => comp.competency_code),
     datasets: [
       {
         label: 'Average Score',
@@ -140,6 +143,7 @@ const DepartmentPerformanceDashboard: React.FC = () => {
     scales: {
       y: {
         beginAtZero: true,
+        max:4,
         title: {
           display: true,
           text: 'Score',
@@ -158,7 +162,7 @@ const DepartmentPerformanceDashboard: React.FC = () => {
   return (
     <div style={{
       fontFamily: 'Arial, sans-serif',
-      maxWidth: '1700px',
+      maxWidth: '1500px',
       margin: '0 auto',
       padding: '20px'
     }}>
@@ -239,7 +243,7 @@ const DepartmentPerformanceDashboard: React.FC = () => {
           {chartData && (
             <div style={{
              
-              width:"1600px",
+              width:"1100px",
               marginBottom: '30px'
             }}>
               <Bar data={chartData} options={chartOptions} />
@@ -247,11 +251,12 @@ const DepartmentPerformanceDashboard: React.FC = () => {
           )}
           
           <div style={{ marginBottom: '30px' }}>
-            <h2>Top Performing Competencies</h2>
+            
             {departmentData.competencies.length > 0 ? (
-              <div style={{
+            <div><h2>Top Performing Competencies</h2>
+            <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(500px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
                 gap: '15px'
               }}>
                 {departmentData.competencies.slice(0, 3).map(comp => (
@@ -267,6 +272,28 @@ const DepartmentPerformanceDashboard: React.FC = () => {
                     <p><strong>Fulfillment:</strong> {comp.fulfillment_rate}%</p>
                   </div>
                 ))}
+              </div>
+              <h2>Least Performing Competencies</h2>
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
+                gap: '15px'
+              }}>
+                {
+                [...competencies].reverse().slice(0, 3).map(comp => (
+                  <div key={comp.competency_code} style={{
+                    backgroundColor: ' rgb(247, 202, 202)',
+                    padding: '15px',
+                    borderRadius: '5px',
+                    borderLeft: '4px solid rgb(255, 24, 24)'
+                  }}>
+                    <h3 style={{ marginTop: 0 }}>{comp.competency_name}</h3>
+                    <p><strong>Rank:</strong> {comp.rank}</p>
+                    <p><strong>Score:</strong> {comp.average_score.toFixed(2)}/{comp.required_score}</p>
+                    <p><strong>Fulfillment:</strong> {comp.fulfillment_rate}%</p>
+                  </div>
+                ))}
+              </div>
               </div>
             ) : (
               <p>No competency data available for this department.</p>

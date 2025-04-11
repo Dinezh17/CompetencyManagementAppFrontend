@@ -86,7 +86,7 @@ const RoleCompetencyAssignment: React.FC = () => {
 
   const handleAssign = async () => {
     if (!roleCode || selectedCompetencies.length === 0) return;
-
+    if (window.confirm("Confirm assignment?")){
     try {
       // Filter only competencies that are not already assigned
       const competenciesToAssign = selectedCompetencies.filter(
@@ -103,14 +103,16 @@ const RoleCompetencyAssignment: React.FC = () => {
       // Refresh data after assignment
       await fetchAllData();
       setSelectedCompetencies([]);
+      
     } catch (error) {
       console.error("Error assigning competencies:", error);
     }
+  }
   };
 
   const handleRemove = async () => {
     if (!roleCode || selectedCompetencies.length === 0) return;
-
+    if (window.confirm("Confirm remove competency?")){
     try {
       // Filter only competencies that are currently assigned
       const competenciesToRemove = selectedCompetencies.filter(
@@ -130,7 +132,8 @@ const RoleCompetencyAssignment: React.FC = () => {
     } catch (error) {
       console.error("Error removing competencies:", error);
     }
-  };
+  }
+};
 
   const goBackToRoles = () => {
     navigate('/role-competencies');

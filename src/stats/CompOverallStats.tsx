@@ -156,6 +156,7 @@ const OverallCompetencyDashboard: React.FC = () => {
     scales: {
       y: {
         beginAtZero: true,
+        max:4,
         title: {
           display: true,
           text: 'Score',
@@ -225,7 +226,7 @@ const buttonStyle = {
   return (
     <div style={{
       fontFamily: 'Arial, sans-serif',
-      maxWidth: '1700px',
+      maxWidth: '1500px',
       margin: '0 auto',
       padding: '20px'
     }}>
@@ -298,10 +299,10 @@ const buttonStyle = {
             gap: '30px',
             marginBottom: '30px'
           }}>
-            <div style={{ width:"1600px"  }}>
+            <div style={{ width:"1100px"  }}>
               <Bar data={scoreChartData} options={scoreChartOptions} />
             </div>
-            <div style={{width:"1600px" }}>
+            <div style={{width:"1100px" }}>
               <Bar data={fulfillmentChartData} options={fulfillmentChartOptions} />
             </div>
           </div>
@@ -311,7 +312,7 @@ const buttonStyle = {
             <h2>Top Performing Competencies</h2>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(500px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
               gap: '15px'
             }}>
               {competencyData.slice(0, 3).map(comp => (
@@ -337,7 +338,7 @@ const buttonStyle = {
             <h2>Areas Needing Improvement</h2>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(500px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
               gap: '15px'
             }}>
               {[...competencyData].reverse().slice(0, 3).map(comp => (

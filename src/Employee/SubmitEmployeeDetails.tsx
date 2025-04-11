@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, href } from "react-router-dom";
 import api from "../interceptor/api";
 import { AuthContext } from "../auth/AuthContext";
 
@@ -93,9 +93,9 @@ const EmployeeEvaluationHod: React.FC = () => {
         }))
       };
   
-      const resposne =await api.post(`/evaluations/${employeeNumber}`, payload);
-      if (resposne) {
-        alert(resposne.data)
+      const response =await api.post(`/evaluations/${employeeNumber}`, payload);
+      if (response){
+        window.location.href = `/employee-eval-hod/${employeeNumber}`;
       }
     } catch (error) {
       console.error("Error submitting evaluation:", error);
