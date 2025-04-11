@@ -89,7 +89,7 @@ const UserRegistration: React.FC = () => {
       <div style={styles.card}>
         <h2 style={styles.heading}>User Registration</h2>
         <form onSubmit={handleSubmit}>
-          <label>Username</label>
+          <label>Employee Number</label>
           <input type="text" name="username" required style={styles.input} />
 
           <label>Email</label>

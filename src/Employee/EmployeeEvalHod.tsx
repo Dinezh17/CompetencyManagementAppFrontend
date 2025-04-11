@@ -48,7 +48,7 @@ const DepartmentManagerEvaluation: React.FC = () => {
     }
     console.log(user.username)
     if (user.username) {
-      api.get(`/employee/${user.username}`)
+      api.get(`/managing-employee/${user.username}`)
         .then((res) => {
           setManagerDetails(res.data.employee);
         })
