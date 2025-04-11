@@ -106,7 +106,7 @@ const App: React.FC = () => {
         <Route path="/register" element={<UserRegistration />} />
 
         {/* HR-only routes */}
-        <Route element={<ProtectedRouteWithRole allowedRoles={["HR"]} />}>
+        <Route element={<ProtectedRouteWithRole allowedRoles={["HR","ADMIN"]} />}>
           <Route path="/department-crud" element={<DepartmentManagement/>} />
           <Route path="/role-crud" element={<RoleManagement/>} />
           <Route path="/competency-crud" element={<CompetencyManagement/>} />
@@ -128,7 +128,7 @@ const App: React.FC = () => {
         </Route>
 
         {/* HOD-only routes */}
-        <Route element={<ProtectedRouteWithRole allowedRoles={["HOD"]} />}>
+        <Route element={<ProtectedRouteWithRole allowedRoles={["HOD","ADMIN"]} />}>
           <Route path="/employee-eval-hod" element={<DepartmentManagerEvaluation/>} />
           <Route path="/employee-eval-hod/:employeeNumber" element={<EmployeeEvaluationHod />} />
         </Route>

@@ -69,11 +69,11 @@ const Navbar: React.FC = () => {
   const sidebarStyle: React.CSSProperties = {
     position: "fixed",
     top: 0,
-    left: menuOpen ? "0" : "-250px",
-    width: "250px",
+    left: menuOpen ? "0" : "-300px",
+    width: "300px",
     height: "100vh",
     backgroundColor: theme.primary,
-    paddingTop: "60px",
+    paddingTop: "30px",
     transition: "left 0.3s ease-in-out",
     boxShadow: menuOpen ? "2px 0 5px rgba(0, 0, 0, 0.1)" : "none",
     zIndex: 1100,
@@ -169,7 +169,7 @@ const Navbar: React.FC = () => {
         {user && (
           <div style={userInfoStyle}>
             <span>
-              {user.username} | {user.role} | Dept: {dptname?.name}
+              {user.username} | {user.role} | Department : {dptname?.name||user.departmentCode}
             </span>
           </div>
         )}
@@ -236,6 +236,7 @@ const Navbar: React.FC = () => {
       {/* Sidebar */}
       {user && (
         <div style={sidebarStyle}>
+          
           <Link 
             to="/" 
             style={sidebarLinkStyle} 
@@ -245,7 +246,10 @@ const Navbar: React.FC = () => {
           >
             Home
           </Link>
-            {/* ADMIN MENU
+            
+        {/* ADMIN MENU */}
+
+
             {user.role === "ADMIN" && (
             <>
               <Link 
@@ -255,7 +259,7 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Department
+                Department Management
               </Link>
               <Link 
                 to="/role-crud" 
@@ -264,7 +268,7 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Role
+                Role Management
               </Link>
               <Link 
                 to="/competency-crud" 
@@ -282,7 +286,7 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Role Assign
+                Role Competency Assignment
               </Link>
               <Link 
                 to="/employee-crud" 
@@ -291,7 +295,7 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Employee
+                Employee Management
               </Link>
               <Link 
                 to="/employee-excel" 
@@ -309,17 +313,18 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                List Employee
-              </Link>
+                List Employee Evaluation Status
+                </Link>
               <Link 
-                to="/employee-stats-overall" 
+                to="/employee-competencies-table" 
                 style={sidebarLinkStyle} 
                 onClick={() => setMenuOpen(false)}
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Competency DashBoard
+                Employee Competency report
               </Link>
+              
               <Link 
                 to="/competency-gap-table" 
                 style={sidebarLinkStyle} 
@@ -329,14 +334,15 @@ const Navbar: React.FC = () => {
               >
                 Competency Gap Analysis
               </Link>
+              
               <Link 
-                to="/employee-competencies-table" 
+                to="/employee-stats-overall" 
                 style={sidebarLinkStyle} 
                 onClick={() => setMenuOpen(false)}
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Employee Competencies report
+                Competency DashBoard
               </Link>
               <Link 
                 to="/employee-eval-hod" 
@@ -348,7 +354,7 @@ const Navbar: React.FC = () => {
                 Evaluate Employees
               </Link>
             </>
-          )} */}
+          )}
 
           {/* HR MENU */}
           {user.role === "HR" && (
@@ -360,7 +366,7 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Department
+                Department Management
               </Link>
               <Link 
                 to="/role-crud" 
@@ -369,7 +375,7 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Role
+                Role Management
               </Link>
               <Link 
                 to="/competency-crud" 
@@ -387,7 +393,7 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Role Assign
+                Role Competency Assignment
               </Link>
               <Link 
                 to="/employee-crud" 
@@ -396,7 +402,7 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Employee
+                Employee Management
               </Link>
               <Link 
                 to="/employee-excel" 
@@ -414,17 +420,18 @@ const Navbar: React.FC = () => {
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                List Employee
-              </Link>
+                List Employee Evaluation Status
+                </Link>
               <Link 
-                to="/employee-stats-overall" 
+                to="/employee-competencies-table" 
                 style={sidebarLinkStyle} 
                 onClick={() => setMenuOpen(false)}
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Competency DashBoard
+                Employee Competency report
               </Link>
+              
               <Link 
                 to="/competency-gap-table" 
                 style={sidebarLinkStyle} 
@@ -434,14 +441,15 @@ const Navbar: React.FC = () => {
               >
                 Competency Gap Analysis
               </Link>
+              
               <Link 
-                to="/employee-competencies-table" 
+                to="/employee-stats-overall" 
                 style={sidebarLinkStyle} 
                 onClick={() => setMenuOpen(false)}
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme.secondary}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                Employee Competencies report
+                Competency DashBoard
               </Link>
             </>
           )}
